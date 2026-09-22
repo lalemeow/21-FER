@@ -1,0 +1,766 @@
+:root {
+  --bg-top: #0a0815;
+  --bg-mid: #15102a;
+  --bg-bottom: #05040a;
+  --yellow-glow: rgba(255, 220, 70, 0.4);
+  --yellow-primary: #ffd000;
+  --yellow-light: #fff275;
+  --yellow-deep: #f59e0b;
+  --stem-green: #2d8a4e;
+  --leaf-green: #38b000;
+  --flower-center: #3d2105;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at 50% 30%, var(--bg-mid) 0%, var(--bg-top) 60%, var(--bg-bottom) 100%);
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Canvas para lluvia de pétalos */
+#petal-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Reproductor Flotante de Música */
+.music-player-bar {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.music-toggle {
+  background: rgba(20, 15, 38, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 215, 0, 0.5);
+  color: #ffd700;
+  padding: 8px 18px 8px 12px;
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.music-toggle:hover {
+  background: rgba(35, 25, 60, 0.95);
+  border-color: #ffd700;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.35);
+}
+
+.music-disc {
+  font-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #3d2105 40%, #15102a 100%);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  transition: transform 0.3s ease;
+}
+
+.music-toggle.playing .music-disc {
+  animation: spinSlow 3s linear infinite;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+}
+
+.music-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.music-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.music-artist {
+  font-size: 0.75rem;
+  color: #ffd700;
+  opacity: 0.9;
+}
+
+.music-state-icon {
+  font-size: 1.1rem;
+  margin-left: 2px;
+  transition: transform 0.2s ease;
+}
+
+.music-toggle.playing .music-state-icon {
+  animation: pulseBtn 1.5s infinite;
+}
+
+/* Frase lírica dentro de la cartita */
+.song-lyric-box {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(245, 158, 11, 0.06));
+  border: 1px dashed rgba(255, 215, 0, 0.5);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 0.88rem;
+  color: #ffe66d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.4;
+}
+
+.song-lyric-box em {
+  font-style: italic;
+}
+
+/* Contenedor Principal */
+.main-container {
+  width: 100%;
+  max-width: 900px;
+  padding: 40px 20px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+  text-align: center;
+}
+
+/* Encabezado */
+.header-section {
+  animation: fadeInDown 1.2s ease forwards;
+}
+
+.badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 170, 0, 0.2));
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  color: #ffe66d;
+  padding: 6px 18px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.glow-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(3rem, 7vw, 5rem);
+  font-weight: 700;
+  color: #fff6a9;
+  text-shadow:
+    0 0 10px rgba(255, 215, 0, 0.8),
+    0 0 25px rgba(255, 180, 0, 0.6),
+    0 0 45px rgba(255, 150, 0, 0.4);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  color: #ffda6a;
+  font-weight: 600;
+  text-shadow: 0 0 15px rgba(255, 218, 106, 0.5);
+  margin-bottom: 6px;
+}
+
+.tagline {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  opacity: 0.85;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Escenario del Ramo de Flores */
+.bouquet-stage {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  margin: 15px 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.flower-glow {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  height: 280px;
+  background: radial-gradient(circle, var(--yellow-glow) 0%, rgba(255, 215, 0, 0) 70%);
+  filter: blur(25px);
+  pointer-events: none;
+  z-index: 1;
+  animation: pulseGlow 4s infinite alternate ease-in-out;
+}
+
+.ground-glow {
+  position: absolute;
+  bottom: 0;
+  width: 380px;
+  height: 25px;
+  background: radial-gradient(ellipse at center, rgba(56, 176, 0, 0.4) 0%, transparent 75%);
+  border-radius: 50%;
+  filter: blur(8px);
+}
+
+/* Estructura Individual de cada Flor (Tallo abajo, flor arriba) */
+.flower {
+  position: absolute;
+  bottom: 10px;
+  display: flex;
+  flex-direction: column-reverse; /* El tallo abajo y la flor arriba */
+  align-items: center;
+  transform-origin: bottom center;
+  z-index: 2;
+  cursor: pointer;
+  transition: filter 0.3s ease;
+}
+
+.flower:hover {
+  filter: drop-shadow(0 0 15px rgba(255, 220, 50, 0.7));
+}
+
+/* Tallo */
+.stem {
+  width: 9px;
+  background: linear-gradient(to right, #1f6937, #38b000, #1f6937);
+  border-radius: 5px;
+  position: relative;
+  z-index: 2;
+  box-shadow: inset -1px 0 3px rgba(0,0,0,0.4);
+}
+
+/* Hojas */
+.leaf {
+  position: absolute;
+  width: 36px;
+  height: 22px;
+  background: linear-gradient(135deg, #4ad600 0%, #1e6b32 100%);
+  border-radius: 0 25px 0 25px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.leaf-left {
+  left: -32px;
+  bottom: 65px;
+  transform: rotate(-35deg);
+  transform-origin: right bottom;
+  animation: leafSwayLeft 4s ease-in-out infinite alternate;
+}
+
+.leaf-right {
+  right: -32px;
+  bottom: 105px;
+  transform: rotate(35deg) scaleX(-1);
+  transform-origin: left bottom;
+  animation: leafSwayRight 4s ease-in-out infinite alternate;
+}
+
+/* Cabeza de la flor */
+.flower-head {
+  position: relative;
+  z-index: 5;
+  width: 140px;
+  height: 140px;
+  margin-bottom: -22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  animation: bloom 1.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Pétalos */
+.petals-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.petals-container span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 62px;
+  background: linear-gradient(to top, var(--yellow-deep) 0%, var(--yellow-primary) 50%, var(--yellow-light) 100%);
+  border-radius: 50% 50% 20% 20% / 70% 70% 30% 30%;
+  box-shadow: 0 0 10px rgba(255, 190, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+  transform-origin: center bottom;
+  transform: translate(-50%, -100%) rotate(calc(var(--i) * 30deg));
+  transition: transform 0.4s ease;
+}
+
+/* Centro del girasol */
+.flower-center {
+  position: relative;
+  z-index: 3;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #6a3e14 0%, #3d2105 60%, #200f02 100%);
+  box-shadow: 
+    inset 0 0 8px rgba(0, 0, 0, 0.7),
+    0 0 12px rgba(255, 180, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed rgba(184, 115, 51, 0.5);
+}
+
+.sparkle {
+  font-size: 1.1rem;
+  animation: spinSlow 8s linear infinite;
+}
+
+/* Configuraciones de tamaño y posición de las 3 flores */
+/* Flor Central */
+.flower-center-main {
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  animation: swayCenter 5s ease-in-out infinite alternate;
+}
+
+.flower-center-main .stem {
+  height: 220px;
+  width: 11px;
+}
+
+.flower-center-main .flower-head {
+  width: 170px;
+  height: 170px;
+}
+
+.flower-center-main .petals-container span {
+  width: 30px;
+  height: 75px;
+}
+
+.flower-center-main .flower-center {
+  width: 70px;
+  height: 70px;
+}
+
+/* Flor Izquierda */
+.flower-left {
+  left: calc(50% - 110px);
+  transform: translateX(-50%) rotate(-12deg);
+  animation: swayLeft 6s ease-in-out infinite alternate;
+  animation-delay: -1.5s;
+}
+
+.flower-left .stem {
+  height: 175px;
+}
+
+.flower-left .flower-head {
+  width: 130px;
+  height: 130px;
+}
+
+.flower-left .petals-container span {
+  width: 22px;
+  height: 56px;
+}
+
+/* Flor Derecha */
+.flower-right {
+  left: calc(50% + 110px);
+  transform: translateX(-50%) rotate(14deg);
+  animation: swayRight 5.5s ease-in-out infinite alternate;
+  animation-delay: -0.8s;
+}
+
+.flower-right .stem {
+  height: 185px;
+}
+
+.flower-right .flower-head {
+  width: 135px;
+  height: 135px;
+}
+
+.flower-right .petals-container span {
+  width: 23px;
+  height: 58px;
+}
+
+/* Botón de la sorpresa */
+.actions {
+  margin-top: 15px;
+  z-index: 10;
+}
+
+.btn-surprise {
+  background: linear-gradient(135deg, #ffd000 0%, #f59e0b 50%, #d97706 100%);
+  color: #2b1300;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border: none;
+  padding: 16px 36px;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 
+    0 6px 25px rgba(245, 158, 11, 0.45),
+    0 0 20px rgba(255, 215, 0, 0.6);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: pulseBtn 2.5s infinite;
+}
+
+.btn-surprise:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 
+    0 10px 30px rgba(245, 158, 11, 0.6),
+    0 0 30px rgba(255, 215, 0, 0.9);
+  color: #000;
+}
+
+.btn-surprise:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn-icon {
+  font-size: 1.3rem;
+}
+
+.btn-spark {
+  animation: spinSlow 4s linear infinite;
+}
+
+/* Modal de Carta / Dedicatoria */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(8, 6, 18, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.modal-card {
+  background: linear-gradient(145deg, #1b1633, #0f0b20);
+  border: 2px solid rgba(255, 215, 0, 0.6);
+  border-radius: 24px;
+  padding: 38px 30px 30px;
+  max-width: 520px;
+  width: 100%;
+  position: relative;
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.6),
+    0 0 35px rgba(255, 215, 0, 0.25);
+  transform: scale(1);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-align: left;
+}
+
+.modal-overlay.hidden .modal-card {
+  transform: scale(0.85);
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  font-size: 1.8rem;
+  line-height: 1;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: rgba(255, 215, 0, 0.3);
+  transform: rotate(90deg);
+}
+
+.modal-envelope-badge {
+  display: inline-block;
+  background: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.modal-card h2 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2.3rem;
+  color: #ffd000;
+  margin-bottom: 16px;
+  text-shadow: 0 0 10px rgba(255, 208, 0, 0.4);
+}
+
+.letter-body {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.letter-highlight {
+  padding: 12px 16px;
+  background: rgba(255, 215, 0, 0.08);
+  border-left: 3px solid #ffd000;
+  border-radius: 0 12px 12px 0;
+  color: #fff;
+  font-size: 1.05rem;
+}
+
+.letter-footer {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.95rem;
+  color: #cbd5e1;
+}
+
+.btn-mini-confetti {
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid #ffd000;
+  color: #ffd000;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-mini-confetti:hover {
+  background: #ffd000;
+  color: #2b1300;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+
+/* Animaciones @keyframes */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bloom {
+  0% {
+    transform: scale(0.2) rotate(-20deg);
+    opacity: 0.3;
+  }
+  70% {
+    transform: scale(1.08) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes swayCenter {
+  0% {
+    transform: translateX(-50%) rotate(-3deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(3deg);
+  }
+}
+
+@keyframes swayLeft {
+  0% {
+    transform: translateX(-50%) rotate(-18deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(-8deg);
+  }
+}
+
+@keyframes swayRight {
+  0% {
+    transform: translateX(-50%) rotate(8deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(18deg);
+  }
+}
+
+@keyframes leafSwayLeft {
+  0% {
+    transform: rotate(-38deg);
+  }
+  100% {
+    transform: rotate(-28deg);
+  }
+}
+
+@keyframes leafSwayRight {
+  0% {
+    transform: rotate(38deg) scaleX(-1);
+  }
+  100% {
+    transform: rotate(28deg) scaleX(-1);
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    transform: translateX(-50%) scale(0.9);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseBtn {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsividad para Celulares */
+@media (max-width: 600px) {
+  .main-container {
+    padding-top: 60px;
+  }
+  
+  .bouquet-stage {
+    height: 330px;
+    margin: 15px 0;
+  }
+
+  .flower-left {
+    left: calc(50% - 75px);
+  }
+  
+  .flower-right {
+    left: calc(50% + 75px);
+  }
+
+  .flower-center-main .flower-head {
+    width: 140px;
+    height: 140px;
+  }
+
+  .flower-center-main .petals-container span {
+    width: 25px;
+    height: 60px;
+  }
+
+  .flower-left .flower-head, .flower-right .flower-head {
+    width: 110px;
+    height: 110px;
+  }
+
+  .flower-left .petals-container span, .flower-right .petals-container span {
+    width: 18px;
+    height: 48px;
+  }
+
+  .flower-center-main .stem {
+    height: 170px;
+  }
+
+  .flower-left .stem, .flower-right .stem {
+    height: 140px;
+  }
+
+  .btn-surprise {
+    font-size: 1rem;
+    padding: 14px 28px;
+  }
+
+  .modal-card {
+    padding: 28px 20px 22px;
+  }
+
+  .modal-card h2 {
+    font-size: 1.9rem;
+  }
+}
+

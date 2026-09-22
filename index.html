@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¡Feliz 21 Perri! 🌻 Flores Amarillas</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Canvas para lluvia de pétalos y destellos dorados -->
+  <canvas id="petal-canvas"></canvas>
+
+  <!-- Audio oficial: Floricienta - Flores Amarillas -->
+  <audio id="flor-audio" src="flores-amarillas.mp3" preload="auto" loop></audio>
+
+  <!-- Botón y reproductor de música de Flores Amarillas -->
+  <div class="music-player-bar">
+    <button id="music-btn" class="music-toggle" title="Reproducir 'Flores Amarillas' de Floricienta">
+      <div id="music-disc" class="music-disc">🌻</div>
+      <div class="music-info">
+        <span class="music-title">Flores Amarillas</span>
+        <span class="music-artist">Floricienta 💛</span>
+      </div>
+      <span id="music-icon" class="music-state-icon">▶️</span>
+    </button>
+  </div>
+
+  <main class="main-container">
+    <!-- Encabezado con dedicatoria principal -->
+    <header class="header-section">
+      <div class="badge">💛 21 de Septiembre Brillando 💛</div>
+      <h1 class="glow-title">¡Feliz 21 Perri!</h1>
+      <p class="subtitle">Te quiero muchísimo 🌻✨</p>
+      <p class="tagline">Flores amarillas que nunca se marchitan para alguien muy especial.</p>
+    </header>
+
+    <!-- Contenedor del Ramo de Flores Amarillas -->
+    <div class="bouquet-stage">
+      <div class="flower-glow"></div>
+
+      <!-- Flor Izquierda -->
+      <div class="flower flower-left">
+        <div class="stem">
+          <div class="leaf leaf-left"></div>
+          <div class="leaf leaf-right"></div>
+        </div>
+        <div class="flower-head">
+          <div class="petals-container">
+            <span style="--i:0;"></span>
+            <span style="--i:1;"></span>
+            <span style="--i:2;"></span>
+            <span style="--i:3;"></span>
+            <span style="--i:4;"></span>
+            <span style="--i:5;"></span>
+            <span style="--i:6;"></span>
+            <span style="--i:7;"></span>
+            <span style="--i:8;"></span>
+            <span style="--i:9;"></span>
+            <span style="--i:10;"></span>
+            <span style="--i:11;"></span>
+          </div>
+          <div class="flower-center"></div>
+        </div>
+      </div>
+
+      <!-- Flor Central (La más grande) -->
+      <div class="flower flower-center-main">
+        <div class="stem">
+          <div class="leaf leaf-left"></div>
+          <div class="leaf leaf-right"></div>
+        </div>
+        <div class="flower-head">
+          <div class="petals-container">
+            <span style="--i:0;"></span>
+            <span style="--i:1;"></span>
+            <span style="--i:2;"></span>
+            <span style="--i:3;"></span>
+            <span style="--i:4;"></span>
+            <span style="--i:5;"></span>
+            <span style="--i:6;"></span>
+            <span style="--i:7;"></span>
+            <span style="--i:8;"></span>
+            <span style="--i:9;"></span>
+            <span style="--i:10;"></span>
+            <span style="--i:11;"></span>
+          </div>
+          <div class="flower-center">
+            <span class="sparkle">✨</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flor Derecha -->
+      <div class="flower flower-right">
+        <div class="stem">
+          <div class="leaf leaf-left"></div>
+          <div class="leaf leaf-right"></div>
+        </div>
+        <div class="flower-head">
+          <div class="petals-container">
+            <span style="--i:0;"></span>
+            <span style="--i:1;"></span>
+            <span style="--i:2;"></span>
+            <span style="--i:3;"></span>
+            <span style="--i:4;"></span>
+            <span style="--i:5;"></span>
+            <span style="--i:6;"></span>
+            <span style="--i:7;"></span>
+            <span style="--i:8;"></span>
+            <span style="--i:9;"></span>
+            <span style="--i:10;"></span>
+            <span style="--i:11;"></span>
+          </div>
+          <div class="flower-center"></div>
+        </div>
+      </div>
+
+      <!-- Luces mágicas del suelo -->
+      <div class="ground-glow"></div>
+    </div>
+
+    <!-- Botón interactivo para abrir la carta -->
+    <div class="actions">
+      <button id="open-letter-btn" class="btn-surprise">
+        <span class="btn-icon">💌</span>
+        <span>Toca para abrir tu cartita</span>
+        <span class="btn-spark">✨</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Modal / Tarjeta con Mensaje Sorpresa -->
+  <div id="letter-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <button id="close-letter-btn" class="modal-close" aria-label="Cerrar">&times;</button>
+      <div class="modal-envelope-badge">💛 NO TE QUEDASTE SIN FLORES HOY JEJE💛</div>
+      <h2>Para fer</h2>
+    
+
+      <div class="letter-body">
+        <p>
+          ¡Feliz 21 de septiembre! 🎉 Hoy quise traerte estas <strong>flores amarillas</strong>
+          que representan alegría, lealtad, luz y todo el cariño del mundo.
+        </p>
+        <p>
+          Espero que te guste esto jeje, eres importante y siempre estare 
+          agradecidad contigo por tu amistad y estar conmigo... de no dejarme solita jeje 
+        </p>
+        <p class="letter-highlight">
+          Gracias por tu amistad de nuevo y por cada momento compartido.<br>
+          <strong>¡Te quiero mucho, fer!</strong> 🌻💛✨
+        </p>
+      </div>
+
+      <div class="letter-footer">
+        <span>besos en la cola</span>
+        <button id="card-confetti-btn" class="btn-mini-confetti">¡Lanzar más confeti! 🎊</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
